@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/*
+  Tailwind v4 CSS-first config. The speaker's brand palette becomes first-class
+  utilities: bg-ink, text-mint, border-coral, etc. No tailwind.config.js needed.
+  This block is a "design token" — a constrained, named value space. The same
+  idea that makes Tailwind predictable for an LLM (a closed vocabulary) is what
+  makes a design system consistent for a team.
+*/
+@theme {
+  --color-ink: #222121;
+  --color-ink-soft: #2c2b2b;
+  --color-mint: #75dfbc;
+  --color-gold: #f1cf25;
+  --color-coral: #ff6a4c;
+
+  --font-sans: "Arial Nova", Arial, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Courier New",
+    monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+/* fade-in for newly "streamed" diff lines in the LLM iteration demo */
+@keyframes lineIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.line-in {
+  animation: lineIn 0.35s ease both;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: white;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
