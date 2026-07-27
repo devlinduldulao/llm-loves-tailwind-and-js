@@ -3,18 +3,17 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "../../lib/cn";
 
 /**
- * A shadcn/ui-style Button — the most-copied component pattern on the internet,
- * and a live proof of the talk's thesis.
+ * A shadcn/ui-style Button: live proof of the talk's thesis.
  *
  * `cva` (class-variance-authority) turns a closed set of Tailwind utilities into
- * a TYPED contract. The variants below are:
+ * a typed contract. The variants below are:
  *   - autocompleted in your editor,
- *   - type-checked at compile time (a bad variant is a red squiggle, not a bug),
+ *   - type-checked at compile time (a bad variant is a red squiggle),
  *   - and readable in ONE span by both a teammate and an LLM.
  *
  * TypeScript and Tailwind are the same philosophy at two layers: a constrained,
  * named vocabulary that catches mistakes early. Ask an LLM to "add a `success`
- * variant" and it edits exactly one place — because everything lives here.
+ * variant" and it edits exactly one place, because everything lives here.
  */
 export const buttonVariants = cva(
   // base classes — always applied

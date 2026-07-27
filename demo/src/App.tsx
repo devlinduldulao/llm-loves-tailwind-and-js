@@ -196,11 +196,11 @@ function App() {
               </code>{" "}
               turns a closed set of utilities into a{" "}
               <strong className="text-white">typed contract</strong>. Every
-              variant above is autocompleted and type-checked — a wrong value is a
-              compile error, not a production bug.
+              variant above is autocompleted and type-checked. A wrong value is a
+              red squiggle at compile time.
             </p>
             <p>
-              This is the whole talk in one component: a{" "}
+              Same idea at two layers: a{" "}
               <strong className="text-white">constrained, named vocabulary</strong>{" "}
               that catches mistakes early. TypeScript does it for values; Tailwind
               does it for styles. An LLM reads the entire contract in one span and
@@ -220,8 +220,8 @@ function App() {
       <Section kicker="Demo 3" title="Watch it edit one file">
         <p className="mb-8 max-w-3xl text-white/70">
           Ask an LLM to grow the component. Every edit lands inside{" "}
-          <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-mint">button.tsx</code>{" "}
-          — no cascade to chase, no stylesheet to hunt down. Local edit = safe edit.
+          <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-mint">button.tsx</code>
+          . No cascade to chase, no stylesheet to hunt down. Local edit = safe edit.
         </p>
         <LlmIterationDemo />
       </Section>

@@ -32,20 +32,20 @@ npm run build
 ## Live-demo scripts (say this, do this)
 
 **Demo 1 — "What the model has to reason about"**
-1. Show both cards rendered side-by-side — pixel identical.
+1. Show both cards rendered side-by-side, pixel identical.
 2. Click **Show source**. Point out: semantic = 2 files + 11 invented class names + a cascade; Tailwind = 1 file, 0 names.
 3. Optional zinger: paste `PricingCard.tailwind.tsx` into an LLM and ask *"make the featured card's CTA pulse on hover."* It edits one line, in place.
 
 **Demo 2 — "Typed variants, LLM-friendly by construction"**
 1. Play with the variant/size dropdowns; show the generated class string update live.
 2. In your editor, show autocomplete on `<Button variant="` — the closed set appears.
-3. Point out a wrong variant is a compile error (red squiggle), not a production bug.
+3. Point out a wrong variant is a red squiggle at compile time.
 
 **Demo 3 — "Watch it edit one file"** (`LlmIterationDemo`)
 1. Scroll to the **"Watch it edit one file"** section. Click **Send prompt** three times.
 2. Each click appends a green diff to the `button.tsx` feed *and* grows the live component (green `success`, a spinner `loading` state, then a full-width CTA).
 3. Land the closing counter: **"3 prompts · 5 lines added · 0 other files touched."** Local edit = safe edit.
-4. This panel is a *deterministic replay* so it never fails on stage. To do it for real, run the same prompts against `ui/button.tsx` in your editor with Cursor/Claude — this is the backup.
+4. This panel is a *deterministic replay* so it never fails on stage. To do it for real, run the same prompts against `ui/button.tsx` in your editor with Cursor/Claude. This panel is the backup.
 
 ## Stack
 

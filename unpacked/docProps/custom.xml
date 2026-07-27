@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="2" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_Enabled">
+    <vt:lpwstr>true</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="3" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_SetDate">
+    <vt:lpwstr>2026-07-14T16:34:20Z</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="4" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_Method">
+    <vt:lpwstr>Standard</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="5" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_Name">
+    <vt:lpwstr>Internal - Crayon Group Only</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="6" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_SiteId">
+    <vt:lpwstr>8f47ad71-44ca-48bf-afe3-56b9360a4495</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="7" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_ActionId">
+    <vt:lpwstr>005b6897-af3e-4122-9270-827420e2aab7</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="8" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_ContentBits">
+    <vt:lpwstr>2</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="9" name="MSIP_Label_178c0f71-65dc-41d1-a799-91080a268621_Tag">
+    <vt:lpwstr>50, 3, 0, 1</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="10" name="ClassificationContentMarkingFooterLocations">
+    <vt:lpwstr>Office Theme:3</vt:lpwstr>
+  </property>
+  <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="11" name="ClassificationContentMarkingFooterText">
+    <vt:lpwstr>Internal Only</vt:lpwstr>
+  </property>
+</Properties>
