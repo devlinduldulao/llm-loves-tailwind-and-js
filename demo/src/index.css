@@ -8,19 +8,30 @@
   makes a design system consistent for a team.
 */
 @theme {
-  --color-ink: #222121;
-  --color-ink-soft: #2c2b2b;
-  --color-mint: #75dfbc;
-  --color-gold: #f1cf25;
-  --color-coral: #ff6a4c;
+  --color-canvas: #f4f6f9;
+  --color-surface: #ffffff;
+  --color-ink: #0f172a;
+  --color-ink-soft: #334155;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-mint: #0d9488;
+  --color-mint-soft: #ccfbf1;
+  --color-gold: #ca8a04;
+  --color-coral: #e11d48;
+  --color-coral-soft: #ffe4e6;
 
-  --font-sans: "Arial Nova", Arial, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Courier New",
-    monospace;
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "SFMono-Regular", Consolas,
+    "Courier New", monospace;
+
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04),
+    0 8px 24px rgb(15 23 42 / 0.06);
+  --shadow-card-lg: 0 2px 4px rgb(15 23 42 / 0.04),
+    0 16px 40px rgb(15 23 42 / 0.08);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* fade-in for newly "streamed" diff lines in the LLM iteration demo */
@@ -40,8 +51,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-ink);
-  color: white;
+  background: var(--color-canvas);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

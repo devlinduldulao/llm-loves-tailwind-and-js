@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { PricingCardSemantic } from "./components/PricingCard.semantic";
 import { PricingCardTailwind } from "./components/PricingCard.tailwind";
 import { Button, buttonVariants } from "./components/ui/button";
@@ -15,21 +15,29 @@ const FEATURES = ["Unlimited projects", "Priority support", "LLM-friendly by des
 const VARIANTS = ["primary", "secondary", "outline", "ghost", "destructive"] as const;
 const SIZES = ["sm", "md", "lg"] as const;
 
+function scrollToId(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function Section({
   kicker,
   title,
   children,
+  id,
 }: {
   kicker: string;
   title: string;
   children: React.ReactNode;
+  id?: string;
 }) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 py-16">
-      <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-mint">
+    <section id={id} className="mx-auto w-full max-w-6xl scroll-mt-4 px-5 py-14 sm:px-6 sm:py-16">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-mint sm:text-sm">
         {kicker}
       </p>
-      <h2 className="mb-10 text-3xl font-extrabold sm:text-4xl">{title}</h2>
+      <h2 className="mb-3 max-w-2xl text-2xl font-extrabold tracking-tight text-ink sm:mb-4 sm:text-4xl">
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -37,14 +45,65 @@ function Section({
 
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
-      <div className="border-b border-white/10 px-4 py-2 font-mono text-xs text-white/50">
-        {label}
+    <div className="overflow-hidden rounded-xl border border-border bg-slate-950 shadow-card">
+      <div className="flex items-center justify-between border-b border-white/10 bg-slate-900 px-4 py-2">
+        <span className="font-mono text-[11px] font-medium text-slate-400">{label}</span>
+        <span className="flex gap-1" aria-hidden>
+          <span className="size-2 rounded-full bg-slate-700" />
+          <span className="size-2 rounded-full bg-slate-700" />
+          <span className="size-2 rounded-full bg-slate-700" />
+        </span>
       </div>
-      <pre className="max-h-80 overflow-auto p-4 font-mono text-xs leading-relaxed text-white/80">
+      <pre className="max-h-72 overflow-auto p-4 font-mono text-[11px] leading-relaxed text-slate-300 sm:text-xs">
         <code>{code.trim()}</code>
       </pre>
     </div>
+  );
+}
+
+function ChipGroup<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: readonly T[];
+  onChange: (next: T) => void;
+}) {
+  return (
+    <fieldset className="min-w-0">
+      <legend className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">
+        {label}
+      </legend>
+      <div
+        className="flex flex-wrap gap-1.5 rounded-xl bg-slate-100/80 p-1"
+        role="radiogroup"
+        aria-label={label}
+      >
+        {options.map((option) => {
+          const selected = option === value;
+          return (
+            <button
+              key={option}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(option)}
+              className={cn(
+                "cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-all",
+                selected
+                  ? "bg-surface text-ink shadow-sm ring-1 ring-border"
+                  : "text-muted hover:bg-white/60 hover:text-ink",
+              )}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 
@@ -52,35 +111,66 @@ function App() {
   const [showCode, setShowCode] = useState(false);
   const [variant, setVariant] = useState<(typeof VARIANTS)[number]>("primary");
   const [size, setSize] = useState<(typeof SIZES)[number]>("md");
+  const codeRef = useRef<HTMLDivElement>(null);
 
   const generatedClasses = buttonVariants({ variant, size });
 
+  const revealCode = () => {
+    setShowCode(true);
+    // Wait a frame so the code panel mounts, then scroll to it.
+    requestAnimationFrame(() => {
+      codeRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
+  const toggleCode = () => {
+    if (showCode) {
+      setShowCode(false);
+      return;
+    }
+    revealCode();
+  };
+
   return (
-    <div className="min-h-screen bg-ink text-white">
+    <div className="min-h-screen bg-canvas text-ink">
       {/* Hero */}
-      <header className="relative overflow-hidden border-b border-white/10">
-        <div className="mx-auto max-w-6xl px-6 py-20">
-          <p className="mb-4 inline-block rounded-full border border-mint/30 bg-mint/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-mint">
-            Live demo
-          </p>
-          <h1 className="max-w-4xl text-4xl font-extrabold leading-tight sm:text-6xl">
+      <header className="relative overflow-hidden border-b border-border bg-surface">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_15%_-10%,rgb(13_148_136/0.14),transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_10%,rgb(225_29_72/0.06),transparent_50%)]"
+        />
+        <div className="relative mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="inline-flex items-center rounded-full border border-mint/20 bg-mint-soft/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-mint">
+              Live demo
+            </p>
+            <p className="text-xs text-muted">Talk companion · ~3 interactive demos</p>
+          </div>
+          <h1 className="mt-5 max-w-3xl text-[2.15rem] font-extrabold leading-[1.12] tracking-tight text-ink sm:text-5xl lg:text-6xl">
             Why LLMs & JS frameworks{" "}
-            <span className="text-mint">love Tailwind CSS</span>
+            <span className="bg-gradient-to-r from-mint to-teal-600 bg-clip-text text-transparent">
+              love Tailwind CSS
+            </span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-white/70">
-            The methodology wars are over, and the machines voted. Below: the same
-            UI built the "semantic" way vs. the Tailwind way — the difference is
-            what a human <em>and</em> a next-token predictor have to reason about.
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+            Same UI, two approaches. See what a human — and a next-token predictor —
+            has to hold in context when styles live next to markup.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" onClick={() => setShowCode((s) => !s)}>
-              {showCode ? "Hide the code" : "Show me the code"}
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button size="lg" onClick={() => scrollToId("demo-1")}>
+              Start the demos
+            </Button>
+            <Button size="lg" variant="outline" onClick={revealCode}>
+              Show the source
             </Button>
             <a
               href="https://tailwindcss.com/docs"
               target="_blank"
               rel="noreferrer"
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "lg" }),
+                "text-muted",
+              )}
             >
               Tailwind docs ↗
             </a>
@@ -89,45 +179,49 @@ function App() {
       </header>
 
       {/* Demo 1 — same card, two ways */}
-      <Section kicker="Demo 1" title="Same card. Two files vs. one span.">
-        <div className="grid gap-10 lg:grid-cols-2">
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex items-baseline gap-3">
-              <span className="rounded bg-coral/15 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-coral">
+      <Section
+        id="demo-1"
+        kicker="Demo 1"
+        title="Same card. Two files vs. one span."
+      >
+        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+          Pixel-identical components. The only difference is how many files you (or
+          an LLM) must open to understand the look.
+        </p>
+
+        <div className="grid gap-0 overflow-hidden rounded-2xl border border-border bg-surface shadow-card lg:grid-cols-2">
+          <div className="flex flex-col items-center gap-5 border-b border-border p-6 sm:p-8 lg:border-b-0 lg:border-r">
+            <div className="flex w-full max-w-xs flex-col items-center gap-1 text-center">
+              <span className="rounded-md bg-coral-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-coral">
                 Semantic CSS
               </span>
-              <span className="text-xs text-white/50">
-                2 files · invented names · cascade
-              </span>
+              <span className="text-xs text-muted">2 files · invented names · cascade</span>
             </div>
             <PricingCardSemantic name="Pro" price="$29" features={FEATURES} featured />
           </div>
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex items-baseline gap-3">
-              <span className="rounded bg-mint/15 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-mint">
+          <div className="flex flex-col items-center gap-5 bg-slate-50/60 p-6 sm:p-8">
+            <div className="flex w-full max-w-xs flex-col items-center gap-1 text-center">
+              <span className="rounded-md bg-mint-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-mint">
                 Tailwind
               </span>
-              <span className="text-xs text-white/50">
-                1 file · 0 names · 0 config
-              </span>
+              <span className="text-xs text-muted">1 file · 0 names · 0 config</span>
             </div>
             <PricingCardTailwind name="Pro" price="$29" features={FEATURES} featured />
           </div>
         </div>
 
-        <p className="mt-8 text-center text-sm text-white/50">
-          Pixel-identical output. Now look at what produced it —
-          <button
-            className="ml-1 font-bold text-mint underline underline-offset-4"
-            onClick={() => setShowCode((s) => !s)}
-          >
-            {showCode ? "hide source" : "show source"}
-          </button>
-        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted">
+            Same pixels. Different cost of change.
+          </p>
+          <Button variant="secondary" size="sm" onClick={toggleCode}>
+            {showCode ? "Hide source" : "Compare source files"}
+          </Button>
+        </div>
 
         {showCode && (
-          <div className="mt-8 grid gap-6 lg:grid-cols-2">
-            <div className="flex flex-col gap-6">
+          <div ref={codeRef} className="mt-6 scroll-mt-8 grid gap-4 lg:grid-cols-2">
+            <div className="flex flex-col gap-4">
               <CodeBlock code={semanticTsx} label="PricingCard.semantic.tsx" />
               <CodeBlock code={semanticCss} label="PricingCard.semantic.css" />
             </div>
@@ -137,98 +231,85 @@ function App() {
       </Section>
 
       {/* Demo 2 — typed variants with cva */}
-      <Section kicker="Demo 2" title="Typed variants: TypeScript ♥ Tailwind">
-        <div className="grid items-start gap-10 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-ink-soft p-8">
-            <div className="flex min-h-40 items-center justify-center rounded-xl bg-black/30 p-8">
-              <Button variant={variant} size={size}>
-                {variant} · {size}
-              </Button>
-            </div>
+      <div className="border-y border-border bg-surface">
+        <Section kicker="Demo 2" title="Typed variants: TypeScript ♥ Tailwind">
+          <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+            Flip variant and size. The class string updates from one typed contract —
+            the same closed vocabulary an LLM can read and edit safely.
+          </p>
 
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <label className="flex flex-col gap-1 text-xs font-bold uppercase tracking-wider text-white/50">
-                Variant
-                <select
+          <div className="grid items-stretch gap-8 lg:grid-cols-5">
+            <div className="flex flex-col rounded-2xl border border-border bg-canvas p-5 shadow-card sm:p-6 lg:col-span-3">
+              <div className="flex min-h-36 flex-1 items-center justify-center rounded-xl border border-dashed border-slate-300/80 bg-surface p-8">
+                <Button variant={variant} size={size} key={`${variant}-${size}`}>
+                  {variant} · {size}
+                </Button>
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <ChipGroup
+                  label="Variant"
                   value={variant}
-                  onChange={(e) =>
-                    setVariant(e.target.value as (typeof VARIANTS)[number])
-                  }
-                  className="rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm font-normal normal-case tracking-normal text-white"
-                >
-                  {VARIANTS.map((v) => (
-                    <option key={v} value={v}>
-                      {v}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="flex flex-col gap-1 text-xs font-bold uppercase tracking-wider text-white/50">
-                Size
-                <select
+                  options={VARIANTS}
+                  onChange={setVariant}
+                />
+                <ChipGroup
+                  label="Size"
                   value={size}
-                  onChange={(e) => setSize(e.target.value as (typeof SIZES)[number])}
-                  className="rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm font-normal normal-case tracking-normal text-white"
-                >
-                  {SIZES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  options={SIZES}
+                  onChange={setSize}
+                />
+              </div>
+
+              <div className="mt-5">
+                <p className="mb-2 font-mono text-[11px] text-muted">
+                  buttonVariants({"{"} variant, size {"}"}) →
+                </p>
+                <code className="block overflow-x-auto rounded-xl border border-border bg-surface p-3 font-mono text-[11px] leading-relaxed text-mint sm:text-xs">
+                  {generatedClasses}
+                </code>
+              </div>
             </div>
 
-            <div className="mt-6">
-              <p className="mb-2 font-mono text-xs text-white/40">
-                buttonVariants({"{"} variant, size {"}"}) →
+            <div className="flex flex-col justify-center space-y-4 text-sm leading-relaxed text-ink-soft sm:text-base lg:col-span-2">
+              <p>
+                <code className="rounded-md bg-mint-soft px-1.5 py-0.5 font-mono text-[13px] text-mint">
+                  cva
+                </code>{" "}
+                turns utilities into a{" "}
+                <strong className="font-semibold text-ink">typed contract</strong>.
+                Wrong values are compile-time errors, not runtime surprises.
               </p>
-              <code className="block rounded-lg bg-black/40 p-3 font-mono text-xs leading-relaxed text-mint">
-                {generatedClasses}
-              </code>
+              <p>
+                TypeScript constrains values; Tailwind constrains styles. An LLM
+                reads the whole contract in one span and edits exactly one place.
+              </p>
+              <p className="rounded-xl border border-mint/20 bg-mint-soft/50 p-4 text-sm text-ink-soft">
+                <strong className="text-mint">Try it:</strong> ask an LLM to add a{" "}
+                <code className="font-mono text-ink">success</code> variant or make{" "}
+                <code className="font-mono text-ink">lg</code> full-width on mobile.
+                One file changes — nothing else.
+              </p>
             </div>
           </div>
-
-          <div className="space-y-4 text-white/70">
-            <p>
-              <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-mint">
-                cva
-              </code>{" "}
-              turns a closed set of utilities into a{" "}
-              <strong className="text-white">typed contract</strong>. Every
-              variant above is autocompleted and type-checked. A wrong value is a
-              red squiggle at compile time.
-            </p>
-            <p>
-              Same idea at two layers: a{" "}
-              <strong className="text-white">constrained, named vocabulary</strong>{" "}
-              that catches mistakes early. TypeScript does it for values; Tailwind
-              does it for styles. An LLM reads the entire contract in one span and
-              edits exactly one place.
-            </p>
-            <p className="rounded-xl border border-mint/20 bg-mint/5 p-4 text-sm text-white/80">
-              <strong className="text-mint">Try it live:</strong> ask your LLM to
-              "add a <code className="font-mono">success</code> variant" or "make{" "}
-              <code className="font-mono">lg</code> full-width on mobile." Watch it
-              touch one file and nothing else.
-            </p>
-          </div>
-        </div>
-      </Section>
+        </Section>
+      </div>
 
       {/* Demo 3 — the LLM iterates on one file */}
       <Section kicker="Demo 3" title="Watch it edit one file">
-        <p className="mb-8 max-w-3xl text-white/70">
-          Ask an LLM to grow the component. Every edit lands inside{" "}
-          <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-mint">button.tsx</code>
-          . No cascade to chase, no stylesheet to hunt down. Local edit = safe edit.
+        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+          Grow the component step by step. Every edit lands inside{" "}
+          <code className="rounded-md bg-slate-100 px-1.5 py-0.5 font-mono text-[13px] text-ink">
+            button.tsx
+          </code>
+          . No cascade to chase. Local edit = safe edit.
         </p>
         <LlmIterationDemo />
       </Section>
 
-      <footer className="border-t border-white/10 py-10 text-center text-sm text-white/40">
-        Companion demo · "Why LLMs & JS Frameworks Love Tailwind CSS" · built with
-        Vite + React + TS + Tailwind v4
+      <footer className="border-t border-border bg-surface py-8 text-center text-xs text-muted sm:text-sm">
+        Companion demo · &ldquo;Why LLMs & JS Frameworks Love Tailwind CSS&rdquo; · Vite +
+        React + TS + Tailwind v4
       </footer>
     </div>
   );

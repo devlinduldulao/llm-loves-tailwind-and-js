@@ -22,23 +22,24 @@ export function PricingCardTailwind({
   return (
     <div
       className={cn(
-        "flex w-80 flex-col rounded-2xl border border-white/10 bg-ink-soft p-7 text-white",
-        featured && "border-mint shadow-[0_0_0_1px_theme(colors.mint)]",
+        "flex w-full max-w-80 flex-col rounded-2xl border border-border bg-surface p-6 text-ink shadow-card sm:p-7",
+        featured &&
+          "border-mint shadow-[0_0_0_1px_theme(colors.mint),0_12px_28px_rgb(13_148_136/0.14)]",
       )}
     >
       {featured && (
-        <span className="mb-4 self-start rounded-full bg-mint/15 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-mint">
+        <span className="mb-4 self-start rounded-full bg-mint-soft px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-mint">
           Most popular
         </span>
       )}
-      <h3 className="text-[15px] font-semibold text-white/70">{name}</h3>
-      <p className="mt-1.5 text-4xl font-extrabold leading-none">
+      <h3 className="text-[15px] font-semibold text-muted">{name}</h3>
+      <p className="mt-1.5 text-4xl font-extrabold leading-none tracking-tight">
         {price}
-        <span className="text-[15px] font-medium text-white/50">/mo</span>
+        <span className="text-[15px] font-medium text-muted">/mo</span>
       </p>
       <ul className="my-5 flex flex-col gap-3">
         {features.map((feature) => (
-          <li key={feature} className="flex items-center gap-2.5 text-sm text-white/85">
+          <li key={feature} className="flex items-center gap-2.5 text-sm text-ink-soft">
             <svg
               className="shrink-0 text-mint"
               width="16"
@@ -47,6 +48,7 @@ export function PricingCardTailwind({
               fill="none"
               stroke="currentColor"
               strokeWidth="3"
+              aria-hidden
             >
               <path d="M20 6 9 17l-5-5" />
             </svg>
@@ -55,11 +57,12 @@ export function PricingCardTailwind({
         ))}
       </ul>
       <button
+        type="button"
         className={cn(
-          "mt-auto cursor-pointer rounded-lg px-4 py-3 text-sm font-bold transition-colors",
+          "mt-auto cursor-pointer rounded-xl px-4 py-3 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2",
           featured
-            ? "bg-mint text-ink hover:bg-mint/80"
-            : "bg-white text-ink hover:bg-white/85",
+            ? "bg-mint text-white hover:bg-mint/90"
+            : "bg-ink text-white hover:bg-ink/90",
         )}
       >
         Choose {name}

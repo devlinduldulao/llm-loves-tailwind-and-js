@@ -17,15 +17,19 @@ import { cn } from "../../lib/cn";
  */
 export const buttonVariants = cva(
   // base classes — always applied
-  "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-bold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: "bg-mint text-ink hover:bg-mint/80",
-        secondary: "bg-white/10 text-white hover:bg-white/20",
-        outline: "border border-white/20 text-white hover:bg-white/10",
-        ghost: "text-white/80 hover:bg-white/10 hover:text-white",
-        destructive: "bg-coral text-ink hover:bg-coral/80",
+        primary:
+          "bg-mint text-white shadow-sm hover:bg-mint/90 hover:shadow",
+        secondary:
+          "bg-slate-100 text-ink hover:bg-slate-200",
+        outline:
+          "border border-border bg-surface text-ink shadow-sm hover:bg-slate-50 hover:border-slate-300",
+        ghost: "text-ink-soft hover:bg-slate-100 hover:text-ink",
+        destructive:
+          "bg-coral text-white shadow-sm hover:bg-coral/90",
       },
       size: {
         sm: "h-8 px-3 text-xs",

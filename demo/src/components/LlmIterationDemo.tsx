@@ -19,13 +19,14 @@ import { cn } from "../lib/cn";
 
 // The button AFTER all three edits — the preview uses it, gated by `unlocked`.
 const iteratedButton = cva(
-  "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-bold transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
+  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
-        primary: "bg-mint text-ink hover:bg-mint/80",
-        destructive: "bg-coral text-ink hover:bg-coral/80",
-        success: "bg-emerald-500 text-ink hover:bg-emerald-500/80",
+        primary: "bg-mint text-white shadow-sm hover:bg-mint/90",
+        destructive: "bg-coral text-white shadow-sm hover:bg-coral/90",
+        success: "bg-emerald-600 text-white shadow-sm hover:bg-emerald-600/90",
+        secondary: "bg-slate-100 text-ink-soft hover:bg-slate-200 hover:text-ink",
       },
       size: { sm: "h-8 px-3 text-xs", md: "h-10 px-4", lg: "h-12 px-6 text-base" },
       fullWidth: { true: "w-full" },
@@ -45,7 +46,7 @@ function IterButton({ className, variant, size, fullWidth, loading, children, ..
       {...props}
     >
       {loading && (
-        <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none">
+        <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z" />
         </svg>
@@ -65,7 +66,7 @@ const STEPS: Step[] = [
   {
     prompt: "Add a success variant (green).",
     intent: "// add a success variant",
-    added: ['success: "bg-emerald-500 text-ink hover:bg-emerald-500/80",'],
+    added: ['success: "bg-emerald-600 text-white hover:bg-emerald-600/90",'],
   },
   {
     prompt: "Add a loading state with a spinner.",
@@ -84,57 +85,92 @@ export function LlmIterationDemo() {
 
   const send = () => setApplied((n) => Math.min(n + 1, STEPS.length));
   const reset = () => setApplied(0);
+  const done = applied >= STEPS.length;
   const nextPrompt = STEPS[applied]?.prompt;
 
   return (
-    <div className="grid items-start gap-10 lg:grid-cols-2">
+    <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-6">
       {/* Left — prompts + live preview */}
-      <div className="space-y-6">
-        <div className="rounded-2xl border border-white/10 bg-ink-soft p-6">
-          <p className="mb-4 text-xs font-bold uppercase tracking-wider text-white/40">
-            ① Prompt the model
-          </p>
-          <div className="space-y-2">
+      <div className="space-y-5">
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+              ① Prompt the model
+            </p>
+            <p className="font-mono text-[11px] text-muted">
+              {applied}/{STEPS.length}
+            </p>
+          </div>
+
+          <ol className="space-y-2">
             {STEPS.map((step, i) => {
               const sent = i < applied;
               const isNext = i === applied;
               return (
-                <div
-                  key={step.prompt}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors",
-                    sent && "border-mint/30 bg-mint/5 text-white/60",
-                    isNext && "border-white/20 bg-white/5 text-white",
-                    !sent && !isNext && "border-white/5 text-white/30",
-                  )}
-                >
-                  <span className={cn("font-mono text-xs", sent ? "text-mint" : "text-white/30")}>
-                    {sent ? "✓" : i + 1}
-                  </span>
-                  <span className="flex-1">{step.prompt}</span>
-                </div>
+                <li key={step.prompt}>
+                  <button
+                    type="button"
+                    disabled={!isNext}
+                    onClick={isNext ? send : undefined}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition-all",
+                      sent && "border-mint/25 bg-mint-soft/40 text-ink-soft",
+                      isNext &&
+                        "cursor-pointer border-mint/50 bg-mint-soft/30 text-ink shadow-sm ring-2 ring-mint/15 hover:border-mint hover:bg-mint-soft/50",
+                      !sent && !isNext && "cursor-default border-border/80 text-muted/60",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-bold",
+                        sent && "bg-mint text-white",
+                        isNext && "bg-ink text-white",
+                        !sent && !isNext && "bg-slate-100 text-muted",
+                      )}
+                      aria-hidden
+                    >
+                      {sent ? "✓" : i + 1}
+                    </span>
+                    <span className="flex-1 leading-snug">{step.prompt}</span>
+                    {isNext && (
+                      <span className="shrink-0 text-[11px] font-semibold text-mint">
+                        Send →
+                      </span>
+                    )}
+                  </button>
+                </li>
               );
             })}
-          </div>
+          </ol>
 
-          <div className="mt-4 flex gap-3">
-            <IterButton onClick={send} disabled={applied >= STEPS.length}>
-              {nextPrompt ? "Send prompt →" : "All applied ✓"}
+          <div className="mt-5 flex flex-wrap gap-2">
+            <IterButton onClick={send} disabled={done} className="min-w-[9.5rem]">
+              {done ? "All applied ✓" : "Send prompt →"}
             </IterButton>
-            <IterButton variant="destructive" onClick={reset} className="bg-white/10 text-white hover:bg-white/20">
+            <IterButton variant="secondary" onClick={reset} disabled={applied === 0}>
               Reset
             </IterButton>
           </div>
+
+          {nextPrompt && (
+            <p className="mt-3 text-xs text-muted">
+              Next: <span className="font-medium text-ink-soft">&ldquo;{nextPrompt}&rdquo;</span>
+            </p>
+          )}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-ink-soft p-6">
-          <p className="mb-4 text-xs font-bold uppercase tracking-wider text-white/40">
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">
             Live component
           </p>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex min-h-12 flex-wrap items-center gap-2.5">
             <IterButton>Primary</IterButton>
             <IterButton variant="destructive">Delete</IterButton>
-            {applied >= 1 && <IterButton variant="success" className="line-in">Saved</IterButton>}
+            {applied >= 1 && (
+              <IterButton variant="success" className="line-in">
+                Saved
+              </IterButton>
+            )}
             {applied >= 2 && (
               <IterButton loading className="line-in">
                 Saving
@@ -149,33 +185,42 @@ export function LlmIterationDemo() {
             </div>
           )}
           {applied === 0 && (
-            <p className="mt-3 text-sm text-white/40">Send a prompt to grow the component ↑</p>
+            <p className="mt-3 text-sm text-muted">
+              Send a prompt above — new variants appear here as they unlock.
+            </p>
           )}
         </div>
       </div>
 
       {/* Right — the diff feed */}
-      <div className="rounded-2xl border border-white/10 bg-black/40">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
-          <p className="text-xs font-bold uppercase tracking-wider text-white/40">
+      <div className="overflow-hidden rounded-2xl border border-border bg-slate-950 shadow-card lg:sticky lg:top-6">
+        <div className="flex items-center justify-between border-b border-white/10 bg-slate-900 px-4 py-3 sm:px-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             ② The edits
           </p>
-          <span className="flex items-center gap-2 font-mono text-xs text-mint">
-            <span className="inline-block size-2 rounded-full bg-mint" />
-            {applied > 0 ? "1 file changed · button.tsx" : "button.tsx"}
+          <span className="flex items-center gap-2 font-mono text-[11px] text-emerald-400">
+            <span
+              className={cn(
+                "inline-block size-1.5 rounded-full",
+                applied > 0 ? "bg-emerald-400" : "bg-slate-600",
+              )}
+            />
+            {applied > 0 ? "1 file · button.tsx" : "button.tsx"}
           </span>
         </div>
 
-        <div className="min-h-72 space-y-4 p-5 font-mono text-xs leading-relaxed">
+        <div className="min-h-64 space-y-4 p-4 font-mono text-[11px] leading-relaxed sm:min-h-72 sm:p-5 sm:text-xs">
           {applied === 0 && (
-            <p className="text-white/30">No edits yet — send a prompt on the left.</p>
+            <p className="text-slate-500">
+              Waiting for a prompt… edits stream into this one file.
+            </p>
           )}
           {STEPS.slice(0, applied).map((step, i) => (
             <div key={step.prompt} className="line-in">
-              <p className="text-white/40">{step.intent}</p>
+              <p className="text-slate-500">{step.intent}</p>
               {step.added.map((line) => (
                 <p key={line} className="text-emerald-400">
-                  <span className="mr-2 select-none text-emerald-500/60">+</span>
+                  <span className="mr-2 select-none text-emerald-600">+</span>
                   {line}
                 </p>
               ))}
@@ -184,9 +229,10 @@ export function LlmIterationDemo() {
           ))}
         </div>
 
-        {applied === STEPS.length && (
-          <div className="border-t border-white/10 px-5 py-3 text-xs text-white/60">
-            3 prompts · 5 lines added · <span className="text-mint">0 other files touched</span>
+        {done && (
+          <div className="border-t border-white/10 bg-slate-900 px-4 py-3 text-xs text-slate-400 sm:px-5">
+            3 prompts · 5 lines added ·{" "}
+            <span className="font-semibold text-emerald-400">0 other files touched</span>
           </div>
         )}
       </div>

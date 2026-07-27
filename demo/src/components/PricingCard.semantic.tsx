@@ -35,6 +35,7 @@ export function PricingCardSemantic({
               fill="none"
               stroke="currentColor"
               strokeWidth="3"
+              aria-hidden
             >
               <path d="M20 6 9 17l-5-5" />
             </svg>
@@ -42,7 +43,9 @@ export function PricingCardSemantic({
           </li>
         ))}
       </ul>
-      <button className="pricing-card__cta">Choose {name}</button>
+      <button type="button" className="pricing-card__cta">
+        Choose {name}
+      </button>
     </div>
   );
 }
