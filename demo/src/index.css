@@ -49,6 +49,12 @@ html {
   animation: lineIn 0.35s ease both;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .line-in {
+    animation: none;
+  }
+}
+
 body {
   margin: 0;
   background: var(--color-canvas);

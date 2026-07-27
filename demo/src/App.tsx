@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PricingCardSemantic } from "./components/PricingCard.semantic";
 import { PricingCardTailwind } from "./components/PricingCard.tailwind";
 import { Button, buttonVariants } from "./components/ui/button";
@@ -16,7 +16,87 @@ const VARIANTS = ["primary", "secondary", "outline", "ghost", "destructive"] as 
 const SIZES = ["sm", "md", "lg"] as const;
 
 function scrollToId(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  document.getElementById(id)?.scrollIntoView({
+    behavior: prefersReducedMotion ? "auto" : "smooth",
+    block: "start",
+  });
+}
+
+const NAV_ITEMS = [
+  { id: "demo-1", label: "Demo 1 · Files" },
+  { id: "demo-2", label: "Demo 2 · Variants" },
+  { id: "demo-3", label: "Demo 3 · Iterate" },
+] as const;
+
+/** Scroll-spy: highlights the nav item for the section currently in view. */
+function useActiveSection() {
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        }
+      },
+      { rootMargin: "-25% 0px -65% 0px" },
+    );
+    for (const { id } of NAV_ITEMS) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, []);
+  return active;
+}
+
+function SiteNav() {
+  const active = useActiveSection();
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  return (
+    <nav className="sticky top-0 z-50 border-b border-border/80 bg-canvas/85 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-5 sm:px-6">
+        <button
+          type="button"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: prefersReducedMotion ? "auto" : "smooth",
+            })
+          }
+          className="shrink-0 cursor-pointer rounded-md text-sm font-extrabold tracking-tight text-ink transition-colors hover:text-mint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint"
+        >
+          LLMs <span className="text-mint">♥</span> Tailwind
+        </button>
+        <div className="flex items-center gap-1 overflow-x-auto">
+          {NAV_ITEMS.map(({ id, label }) => {
+            const isActive = active === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-current={isActive ? "true" : undefined}
+                onClick={() => scrollToId(id)}
+                className={cn(
+                  "shrink-0 cursor-pointer rounded-lg px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint sm:px-3 sm:text-sm",
+                  isActive
+                    ? "bg-mint-soft text-mint"
+                    : "text-muted hover:bg-slate-100 hover:text-ink",
+                )}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
+  );
 }
 
 function Section({
@@ -31,7 +111,7 @@ function Section({
   id?: string;
 }) {
   return (
-    <section id={id} className="mx-auto w-full max-w-6xl scroll-mt-4 px-5 py-14 sm:px-6 sm:py-16">
+    <section id={id} className="mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-14 sm:px-6 sm:py-16">
       <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-mint sm:text-sm">
         {kicker}
       </p>
@@ -92,7 +172,7 @@ function ChipGroup<T extends string>({
               aria-checked={selected}
               onClick={() => onChange(option)}
               className={cn(
-                "cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-all",
+                "cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-1",
                 selected
                   ? "bg-surface text-ink shadow-sm ring-1 ring-border"
                   : "text-muted hover:bg-white/60 hover:text-ink",
@@ -112,15 +192,32 @@ function App() {
   const [variant, setVariant] = useState<(typeof VARIANTS)[number]>("primary");
   const [size, setSize] = useState<(typeof SIZES)[number]>("md");
   const codeRef = useRef<HTMLDivElement>(null);
+  const pendingCodeScroll = useRef(false);
 
   const generatedClasses = buttonVariants({ variant, size });
 
+  // Scroll once the code panel is actually mounted — requestAnimationFrame can
+  // fire before React commits, silently dropping the scroll on stage.
+  useEffect(() => {
+    if (showCode && pendingCodeScroll.current) {
+      pendingCodeScroll.current = false;
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      codeRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    }
+  }, [showCode]);
+
   const revealCode = () => {
-    setShowCode(true);
-    // Wait a frame so the code panel mounts, then scroll to it.
-    requestAnimationFrame(() => {
+    if (showCode) {
       codeRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+      return;
+    }
+    pendingCodeScroll.current = true;
+    setShowCode(true);
   };
 
   const toggleCode = () => {
@@ -133,6 +230,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-canvas text-ink">
+      <SiteNav />
       {/* Hero */}
       <header className="relative overflow-hidden border-b border-border bg-surface">
         <div
@@ -232,7 +330,7 @@ function App() {
 
       {/* Demo 2 — typed variants with cva */}
       <div className="border-y border-border bg-surface">
-        <Section kicker="Demo 2" title="Typed variants: TypeScript ♥ Tailwind">
+        <Section id="demo-2" kicker="Demo 2" title="Typed variants: TypeScript ♥ Tailwind">
           <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
             Flip variant and size. The class string updates from one typed contract —
             the same closed vocabulary an LLM can read and edit safely.
@@ -296,7 +394,7 @@ function App() {
       </div>
 
       {/* Demo 3 — the LLM iterates on one file */}
-      <Section kicker="Demo 3" title="Watch it edit one file">
+      <Section id="demo-3" kicker="Demo 3" title="Watch it edit one file">
         <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
           Grow the component step by step. Every edit lands inside{" "}
           <code className="rounded-md bg-slate-100 px-1.5 py-0.5 font-mono text-[13px] text-ink">
@@ -308,8 +406,25 @@ function App() {
       </Section>
 
       <footer className="border-t border-border bg-surface py-8 text-center text-xs text-muted sm:text-sm">
-        Companion demo · &ldquo;Why LLMs & JS Frameworks Love Tailwind CSS&rdquo; · Vite +
-        React + TS + Tailwind v4
+        <p>
+          Companion demo · &ldquo;Why LLMs & JS Frameworks Love Tailwind CSS&rdquo; ·
+          Vite + React + TS + Tailwind v4
+        </p>
+        <button
+          type="button"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+                .matches
+                ? "auto"
+                : "smooth",
+            })
+          }
+          className="mt-3 cursor-pointer rounded-md text-xs font-semibold text-mint transition-colors hover:text-teal-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint"
+        >
+          ↑ Back to top
+        </button>
       </footer>
     </div>
   );
