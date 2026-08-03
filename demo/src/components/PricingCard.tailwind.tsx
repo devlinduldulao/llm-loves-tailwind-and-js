@@ -1,4 +1,4 @@
-import { cn } from "../lib/cn";
+import { cn } from "@/lib/utils";
 
 type PricingCardProps = {
   name: string;
@@ -22,26 +22,29 @@ export function PricingCardTailwind({
   return (
     <div
       className={cn(
-        "flex w-full max-w-80 flex-col rounded-2xl border border-border bg-surface p-6 text-ink shadow-card sm:p-7",
+        "flex w-full max-w-80 flex-col rounded-2xl border border-border bg-card p-6 text-foreground shadow-card sm:p-7",
         featured &&
-          "border-mint shadow-[0_0_0_1px_theme(colors.mint),0_12px_28px_rgb(13_148_136/0.14)]",
+          "border-foreground shadow-[0_0_0_1px_var(--foreground),0_12px_28px_rgb(15_23_42/0.12)]",
       )}
     >
       {featured && (
-        <span className="mb-4 self-start rounded-full bg-mint-soft px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-mint">
+        <span className="mb-4 self-start rounded-full bg-secondary px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-secondary-foreground">
           Most popular
         </span>
       )}
-      <h3 className="text-[15px] font-semibold text-muted">{name}</h3>
+      <h3 className="text-[15px] font-semibold text-muted-foreground">{name}</h3>
       <p className="mt-1.5 text-4xl font-extrabold leading-none tracking-tight">
         {price}
-        <span className="text-[15px] font-medium text-muted">/mo</span>
+        <span className="text-[15px] font-medium text-muted-foreground">/mo</span>
       </p>
       <ul className="my-5 flex flex-col gap-3">
         {features.map((feature) => (
-          <li key={feature} className="flex items-center gap-2.5 text-sm text-ink-soft">
+          <li
+            key={feature}
+            className="flex items-center gap-2.5 text-sm text-foreground/80"
+          >
             <svg
-              className="shrink-0 text-mint"
+              className="shrink-0 text-foreground"
               width="16"
               height="16"
               viewBox="0 0 24 24"
@@ -59,10 +62,10 @@ export function PricingCardTailwind({
       <button
         type="button"
         className={cn(
-          "mt-auto cursor-pointer rounded-xl px-4 py-3 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2",
+          "mt-auto cursor-pointer rounded-4xl px-4 py-3 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
           featured
-            ? "bg-mint text-white hover:bg-mint/90"
-            : "bg-ink text-white hover:bg-ink/90",
+            ? "bg-primary text-primary-foreground hover:bg-primary/80"
+            : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         )}
       >
         Choose {name}

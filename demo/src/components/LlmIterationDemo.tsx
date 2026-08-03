@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ButtonHTMLAttributes } from "react";
-import { cn } from "../lib/cn";
+import { cn } from "@/lib/utils";
 
 /**
  * Demo 3 — "watch it edit ONE file".
@@ -18,15 +18,17 @@ import { cn } from "../lib/cn";
  */
 
 // The button AFTER all three edits — the preview uses it, gated by `unlocked`.
+// Standalone cva button for the iteration demo (intentionally local — the talk
+// point is that edits land in one file). Maia-soft rounding matches the system.
 const iteratedButton = cva(
-  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2",
+  "inline-flex items-center justify-center gap-2 rounded-4xl text-sm font-semibold transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
-        primary: "bg-mint text-white shadow-sm hover:bg-mint/90",
-        destructive: "bg-coral text-white shadow-sm hover:bg-coral/90",
+        primary: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+        destructive: "bg-destructive text-white shadow-sm hover:bg-destructive/90",
         success: "bg-emerald-600 text-white shadow-sm hover:bg-emerald-600/90",
-        secondary: "bg-slate-100 text-ink-soft hover:bg-slate-200 hover:text-ink",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
       },
       size: { sm: "h-8 px-3 text-xs", md: "h-10 px-4", lg: "h-12 px-6 text-base" },
       fullWidth: { true: "w-full" },
@@ -92,12 +94,12 @@ export function LlmIterationDemo() {
     <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-6">
       {/* Left — prompts + live preview */}
       <div className="space-y-5">
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-card sm:p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               ① Prompt the model
             </p>
-            <p className="font-mono text-[11px] text-muted">
+            <p className="font-mono text-[11px] text-muted-foreground">
               {applied}/{STEPS.length}
             </p>
           </div>
@@ -113,19 +115,19 @@ export function LlmIterationDemo() {
                     disabled={!isNext}
                     onClick={isNext ? send : undefined}
                     className={cn(
-                      "flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition-all",
-                      sent && "border-mint/25 bg-mint-soft/40 text-ink-soft",
+                      "flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-left text-sm transition-all",
+                      sent && "border-border bg-muted/60 text-muted-foreground",
                       isNext &&
-                        "cursor-pointer border-mint/50 bg-mint-soft/30 text-ink shadow-sm ring-2 ring-mint/15 hover:border-mint hover:bg-mint-soft/50",
-                      !sent && !isNext && "cursor-default border-border/80 text-muted/60",
+                        "cursor-pointer border-foreground/30 bg-muted text-foreground shadow-sm ring-2 ring-ring/20 hover:border-foreground/50 hover:bg-muted/80",
+                      !sent && !isNext && "cursor-default border-border/80 text-muted-foreground/60",
                     )}
                   >
                     <span
                       className={cn(
                         "flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-bold",
-                        sent && "bg-mint text-white",
-                        isNext && "bg-ink text-white",
-                        !sent && !isNext && "bg-slate-100 text-muted",
+                        sent && "bg-primary text-primary-foreground",
+                        isNext && "bg-foreground text-background",
+                        !sent && !isNext && "bg-muted text-muted-foreground",
                       )}
                       aria-hidden
                     >
@@ -133,7 +135,7 @@ export function LlmIterationDemo() {
                     </span>
                     <span className="flex-1 leading-snug">{step.prompt}</span>
                     {isNext && (
-                      <span className="shrink-0 text-[11px] font-semibold text-mint">
+                      <span className="shrink-0 text-[11px] font-semibold text-foreground">
                         Send →
                       </span>
                     )}
@@ -153,14 +155,14 @@ export function LlmIterationDemo() {
           </div>
 
           {nextPrompt && (
-            <p className="mt-3 text-xs text-muted">
-              Next: <span className="font-medium text-ink-soft">&ldquo;{nextPrompt}&rdquo;</span>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Next: <span className="font-medium text-foreground">&ldquo;{nextPrompt}&rdquo;</span>
             </p>
           )}
         </div>
 
-        <div className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-card sm:p-6">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Live component
           </p>
           <div className="flex min-h-12 flex-wrap items-center gap-2.5">
@@ -185,7 +187,7 @@ export function LlmIterationDemo() {
             </div>
           )}
           {applied === 0 && (
-            <p className="mt-3 text-sm text-muted">
+            <p className="mt-3 text-sm text-muted-foreground">
               Send a prompt above — new variants appear here as they unlock.
             </p>
           )}

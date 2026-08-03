@@ -3,6 +3,9 @@
 Companion repo for the conference talk. A tiny **Vite + React + TypeScript + Tailwind v4**
 app that makes the talk's thesis concrete and live-codeable on stage.
 
+UI stack: **shadcn/ui `base-maia`** — Base UI primitives + Maia style (soft, large radius,
+generous spacing). Config lives in `components.json`.
+
 ## Run it
 
 ```bash
@@ -23,10 +26,12 @@ npm run build
 | --- | --- |
 | `src/components/PricingCard.semantic.tsx` + `.css` | **Demo 1** — the "semantic CSS" way. Two files, invented BEM names, the cascade. This is what an LLM (or a tired human) must hold in context to reason about one component. |
 | `src/components/PricingCard.tailwind.tsx` | **Demo 1** — the *identical* card, one co-located file, no naming, no cascade. The whole spec in a single span of tokens. |
-| `src/components/ui/button.tsx` | **Demo 2** — a shadcn-style `Button` using `cva`. Typed, autocompleted variants: TypeScript and Tailwind are the same idea (a constrained vocabulary) at two layers. |
+| `src/components/ui/button.tsx` | **Demo 2** — official shadcn Base UI `Button` (Maia) with `cva`. Typed, autocompleted variants: TypeScript and Tailwind are the same idea (a constrained vocabulary) at two layers. |
+| `src/components/ui/{card,badge,separator}.tsx` | Supporting shadcn Base UI components used by the showcase shell. |
 | `src/components/LlmIterationDemo.tsx` | **Demo 3** — a deterministic replay of an LLM extending the component. Each prompt streams a diff into `button.tsx` and unlocks the real capability in the live preview. Shows: every edit lands in *one* file. |
-| `src/lib/cn.ts` | The `clsx` + `tailwind-merge` helper that makes runtime class composition safe. |
-| `src/index.css` | Tailwind v4 CSS-first config. The `@theme` block turns the speaker's brand palette (`ink`, `mint`, `gold`, `coral`) into first-class utilities — a design token = a closed value space. |
+| `src/lib/utils.ts` | The `cn` helper (`clsx` + `tailwind-merge`) that makes runtime class composition safe. `cn.ts` re-exports it. |
+| `src/index.css` | Tailwind v4 + shadcn tokens. Brand palette (`ink`, `mint`, `gold`, `coral`) sits next to semantic tokens (`primary`, `muted-foreground`, …). |
+| `components.json` | shadcn config: `"style": "base-maia"`. |
 | `src/App.tsx` | The showcase page. Doubles as a visual backup if a live demo misbehaves. |
 
 ## Live-demo scripts (say this, do this)
@@ -49,6 +54,15 @@ npm run build
 
 ## Stack
 
+- **shadcn/ui `base-maia`** — Base UI primitives, Maia visual style.
 - **Tailwind v4** via `@tailwindcss/vite` — no `tailwind.config.js`, no PostCSS config.
 - **class-variance-authority** for typed variants, **tailwind-merge** for conflict resolution.
 - React 19 + TypeScript 5.8 + Vite 6.
+
+### Add more components
+
+```bash
+cd demo
+# Corporate Zscaler may need: $env:NODE_TLS_REJECT_UNAUTHORIZED="0"
+npx shadcn@latest add dialog input --overwrite
+```

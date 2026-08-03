@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { PricingCardSemantic } from "./components/PricingCard.semantic";
 import { PricingCardTailwind } from "./components/PricingCard.tailwind";
+import { Badge } from "./components/ui/badge";
 import { Button, buttonVariants } from "./components/ui/button";
+import { Card, CardContent } from "./components/ui/card";
 import { LlmIterationDemo } from "./components/LlmIterationDemo";
-import { cn } from "./lib/cn";
+import { cn } from "@/lib/utils";
 
 // Real source, imported raw — the code you SEE is the code that RENDERS.
 import semanticTsx from "./components/PricingCard.semantic.tsx?raw";
@@ -12,8 +14,9 @@ import tailwindTsx from "./components/PricingCard.tailwind.tsx?raw";
 
 const FEATURES = ["Unlimited projects", "Priority support", "LLM-friendly by design"];
 
-const VARIANTS = ["primary", "secondary", "outline", "ghost", "destructive"] as const;
-const SIZES = ["sm", "md", "lg"] as const;
+// Official shadcn Base UI / Maia variant contract (Demo 2)
+const VARIANTS = ["default", "secondary", "outline", "ghost", "destructive"] as const;
+const SIZES = ["sm", "default", "lg"] as const;
 
 function scrollToId(id: string) {
   const prefersReducedMotion = window.matchMedia(
@@ -59,7 +62,7 @@ function SiteNav() {
   ).matches;
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/80 bg-canvas/85 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-5 sm:px-6">
         <button
           type="button"
@@ -69,9 +72,9 @@ function SiteNav() {
               behavior: prefersReducedMotion ? "auto" : "smooth",
             })
           }
-          className="shrink-0 cursor-pointer rounded-md text-sm font-extrabold tracking-tight text-ink transition-colors hover:text-mint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint"
+          className="shrink-0 cursor-pointer rounded-md text-sm font-extrabold tracking-tight text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          LLMs <span className="text-mint">♥</span> Tailwind
+          LLMs <span className="text-primary">♥</span> Tailwind
         </button>
         <div className="flex items-center gap-1 overflow-x-auto">
           {NAV_ITEMS.map(({ id, label }) => {
@@ -83,10 +86,10 @@ function SiteNav() {
                 aria-current={isActive ? "true" : undefined}
                 onClick={() => scrollToId(id)}
                 className={cn(
-                  "shrink-0 cursor-pointer rounded-lg px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint sm:px-3 sm:text-sm",
+                  "shrink-0 cursor-pointer rounded-4xl px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:px-3 sm:text-sm",
                   isActive
-                    ? "bg-mint-soft text-mint"
-                    : "text-muted hover:bg-slate-100 hover:text-ink",
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
                 {label}
@@ -112,10 +115,10 @@ function Section({
 }) {
   return (
     <section id={id} className="mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-14 sm:px-6 sm:py-16">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-mint sm:text-sm">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary sm:text-sm">
         {kicker}
       </p>
-      <h2 className="mb-3 max-w-2xl text-2xl font-extrabold tracking-tight text-ink sm:mb-4 sm:text-4xl">
+      <h2 className="font-heading mb-3 max-w-2xl text-2xl font-extrabold tracking-tight text-foreground sm:mb-4 sm:text-4xl">
         {title}
       </h2>
       {children}
@@ -125,7 +128,7 @@ function Section({
 
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-slate-950 shadow-card">
+    <div className="overflow-hidden rounded-2xl border border-border bg-slate-950 shadow-card">
       <div className="flex items-center justify-between border-b border-white/10 bg-slate-900 px-4 py-2">
         <span className="font-mono text-[11px] font-medium text-slate-400">{label}</span>
         <span className="flex gap-1" aria-hidden>
@@ -154,11 +157,11 @@ function ChipGroup<T extends string>({
 }) {
   return (
     <fieldset className="min-w-0">
-      <legend className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">
+      <legend className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </legend>
       <div
-        className="flex flex-wrap gap-1.5 rounded-xl bg-slate-100/80 p-1"
+        className="flex flex-wrap gap-1.5 rounded-4xl bg-muted/80 p-1"
         role="radiogroup"
         aria-label={label}
       >
@@ -172,10 +175,10 @@ function ChipGroup<T extends string>({
               aria-checked={selected}
               onClick={() => onChange(option)}
               className={cn(
-                "cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-1",
+                "cursor-pointer rounded-4xl px-3 py-1.5 text-sm font-medium capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                 selected
-                  ? "bg-surface text-ink shadow-sm ring-1 ring-border"
-                  : "text-muted hover:bg-white/60 hover:text-ink",
+                  ? "bg-card text-foreground shadow-sm ring-1 ring-border"
+                  : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
               )}
             >
               {option}
@@ -189,8 +192,8 @@ function ChipGroup<T extends string>({
 
 function App() {
   const [showCode, setShowCode] = useState(false);
-  const [variant, setVariant] = useState<(typeof VARIANTS)[number]>("primary");
-  const [size, setSize] = useState<(typeof SIZES)[number]>("md");
+  const [variant, setVariant] = useState<(typeof VARIANTS)[number]>("default");
+  const [size, setSize] = useState<(typeof SIZES)[number]>("default");
   const codeRef = useRef<HTMLDivElement>(null);
   const pendingCodeScroll = useRef(false);
 
@@ -229,28 +232,31 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-canvas text-ink">
+    <div className="min-h-screen bg-background text-foreground">
       <SiteNav />
       {/* Hero */}
-      <header className="relative overflow-hidden border-b border-border bg-surface">
+      <header className="relative overflow-hidden border-b border-border bg-card">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_15%_-10%,rgb(13_148_136/0.14),transparent_55%),radial-gradient(ellipse_60%_50%_at_90%_10%,rgb(225_29_72/0.06),transparent_50%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_20%_-10%,oklch(0.205_0_0/0.06),transparent_55%),radial-gradient(ellipse_50%_40%_at_90%_0%,oklch(0.556_0_0/0.05),transparent_50%)]"
         />
         <div className="relative mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="inline-flex items-center rounded-full border border-mint/20 bg-mint-soft/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-mint">
+            <Badge
+              variant="outline"
+              className="px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
+            >
               Live demo
+            </Badge>
+            <p className="text-xs text-muted-foreground">
+              Talk companion · ~3 interactive demos · base-maia
             </p>
-            <p className="text-xs text-muted">Talk companion · ~3 interactive demos</p>
           </div>
-          <h1 className="mt-5 max-w-3xl text-[2.15rem] font-extrabold leading-[1.12] tracking-tight text-ink sm:text-5xl lg:text-6xl">
+          <h1 className="font-heading mt-5 max-w-3xl text-[2.15rem] font-extrabold leading-[1.12] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Why LLMs & JS frameworks{" "}
-            <span className="bg-gradient-to-r from-mint to-teal-600 bg-clip-text text-transparent">
-              love Tailwind CSS
-            </span>
+            <span className="text-muted-foreground">love Tailwind CSS</span>
           </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Same UI, two approaches. See what a human — and a next-token predictor —
             has to hold in context when styles live next to markup.
           </p>
@@ -267,7 +273,7 @@ function App() {
               rel="noreferrer"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "lg" }),
-                "text-muted",
+                "text-muted-foreground",
               )}
             >
               Tailwind docs ↗
@@ -282,34 +288,36 @@ function App() {
         kicker="Demo 1"
         title="Same card. Two files vs. one span."
       >
-        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
           Pixel-identical components. The only difference is how many files you (or
           an LLM) must open to understand the look.
         </p>
 
-        <div className="grid gap-0 overflow-hidden rounded-2xl border border-border bg-surface shadow-card lg:grid-cols-2">
+        <div className="grid gap-0 overflow-hidden rounded-2xl border border-border bg-card shadow-card lg:grid-cols-2">
           <div className="flex flex-col items-center gap-5 border-b border-border p-6 sm:p-8 lg:border-b-0 lg:border-r">
             <div className="flex w-full max-w-xs flex-col items-center gap-1 text-center">
-              <span className="rounded-md bg-coral-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-coral">
+              <Badge variant="destructive" className="text-[11px] font-bold uppercase tracking-wider">
                 Semantic CSS
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                2 files · invented names · cascade
               </span>
-              <span className="text-xs text-muted">2 files · invented names · cascade</span>
             </div>
             <PricingCardSemantic name="Pro" price="$29" features={FEATURES} featured />
           </div>
-          <div className="flex flex-col items-center gap-5 bg-slate-50/60 p-6 sm:p-8">
+          <div className="flex flex-col items-center gap-5 bg-muted/40 p-6 sm:p-8">
             <div className="flex w-full max-w-xs flex-col items-center gap-1 text-center">
-              <span className="rounded-md bg-mint-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-mint">
+              <Badge variant="default" className="text-[11px] font-bold uppercase tracking-wider">
                 Tailwind
-              </span>
-              <span className="text-xs text-muted">1 file · 0 names · 0 config</span>
+              </Badge>
+              <span className="text-xs text-muted-foreground">1 file · 0 names · 0 config</span>
             </div>
             <PricingCardTailwind name="Pro" price="$29" features={FEATURES} featured />
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-muted">
+          <p className="text-sm text-muted-foreground">
             Same pixels. Different cost of change.
           </p>
           <Button variant="secondary" size="sm" onClick={toggleCode}>
@@ -329,63 +337,67 @@ function App() {
       </Section>
 
       {/* Demo 2 — typed variants with cva */}
-      <div className="border-y border-border bg-surface">
+      <div className="border-y border-border bg-card">
         <Section id="demo-2" kicker="Demo 2" title="Typed variants: TypeScript ♥ Tailwind">
-          <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+          <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             Flip variant and size. The class string updates from one typed contract —
-            the same closed vocabulary an LLM can read and edit safely.
+            the same closed vocabulary an LLM can read and edit safely. Powered by
+            official shadcn <code className="font-mono text-foreground">base-maia</code>{" "}
+            Button on Base UI.
           </p>
 
           <div className="grid items-stretch gap-8 lg:grid-cols-5">
-            <div className="flex flex-col rounded-2xl border border-border bg-canvas p-5 shadow-card sm:p-6 lg:col-span-3">
-              <div className="flex min-h-36 flex-1 items-center justify-center rounded-xl border border-dashed border-slate-300/80 bg-surface p-8">
-                <Button variant={variant} size={size} key={`${variant}-${size}`}>
-                  {variant} · {size}
-                </Button>
-              </div>
+            <Card className="bg-background shadow-card lg:col-span-3">
+              <CardContent className="flex flex-col gap-5 pt-0">
+                <div className="flex min-h-36 flex-1 items-center justify-center rounded-2xl border border-dashed border-border bg-card p-8">
+                  <Button variant={variant} size={size} key={`${variant}-${size}`}>
+                    {variant} · {size}
+                  </Button>
+                </div>
 
-              <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <ChipGroup
-                  label="Variant"
-                  value={variant}
-                  options={VARIANTS}
-                  onChange={setVariant}
-                />
-                <ChipGroup
-                  label="Size"
-                  value={size}
-                  options={SIZES}
-                  onChange={setSize}
-                />
-              </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <ChipGroup
+                    label="Variant"
+                    value={variant}
+                    options={VARIANTS}
+                    onChange={setVariant}
+                  />
+                  <ChipGroup
+                    label="Size"
+                    value={size}
+                    options={SIZES}
+                    onChange={setSize}
+                  />
+                </div>
 
-              <div className="mt-5">
-                <p className="mb-2 font-mono text-[11px] text-muted">
-                  buttonVariants({"{"} variant, size {"}"}) →
-                </p>
-                <code className="block overflow-x-auto rounded-xl border border-border bg-surface p-3 font-mono text-[11px] leading-relaxed text-mint sm:text-xs">
-                  {generatedClasses}
-                </code>
-              </div>
-            </div>
+                <div>
+                  <p className="mb-2 font-mono text-[11px] text-muted-foreground">
+                    buttonVariants({"{"} variant, size {"}"}) →
+                  </p>
+                  <code className="block overflow-x-auto rounded-2xl border border-border bg-card p-3 font-mono text-[11px] leading-relaxed text-primary sm:text-xs">
+                    {generatedClasses}
+                  </code>
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="flex flex-col justify-center space-y-4 text-sm leading-relaxed text-ink-soft sm:text-base lg:col-span-2">
+            <div className="flex flex-col justify-center space-y-4 text-sm leading-relaxed text-muted-foreground sm:text-base lg:col-span-2">
               <p>
-                <code className="rounded-md bg-mint-soft px-1.5 py-0.5 font-mono text-[13px] text-mint">
+                <code className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[13px] text-foreground">
                   cva
                 </code>{" "}
                 turns utilities into a{" "}
-                <strong className="font-semibold text-ink">typed contract</strong>.
+                <strong className="font-semibold text-foreground">typed contract</strong>.
                 Wrong values are compile-time errors, not runtime surprises.
               </p>
               <p>
                 TypeScript constrains values; Tailwind constrains styles. An LLM
                 reads the whole contract in one span and edits exactly one place.
               </p>
-              <p className="rounded-xl border border-mint/20 bg-mint-soft/50 p-4 text-sm text-ink-soft">
-                <strong className="text-mint">Try it:</strong> ask an LLM to add a{" "}
-                <code className="font-mono text-ink">success</code> variant or make{" "}
-                <code className="font-mono text-ink">lg</code> full-width on mobile.
+              <p className="rounded-2xl border border-border bg-muted/50 p-4 text-sm text-muted-foreground">
+                <strong className="text-foreground">Try it:</strong> ask an LLM to add a{" "}
+                <code className="font-mono text-foreground">success</code> variant or make{" "}
+                <code className="font-mono text-foreground">lg</code> full-width on mobile.
                 One file changes — nothing else.
               </p>
             </div>
@@ -395,9 +407,9 @@ function App() {
 
       {/* Demo 3 — the LLM iterates on one file */}
       <Section id="demo-3" kicker="Demo 3" title="Watch it edit one file">
-        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+        <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
           Grow the component step by step. Every edit lands inside{" "}
-          <code className="rounded-md bg-slate-100 px-1.5 py-0.5 font-mono text-[13px] text-ink">
+          <code className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[13px] text-foreground">
             button.tsx
           </code>
           . No cascade to chase. Local edit = safe edit.
@@ -405,10 +417,10 @@ function App() {
         <LlmIterationDemo />
       </Section>
 
-      <footer className="border-t border-border bg-surface py-8 text-center text-xs text-muted sm:text-sm">
+      <footer className="border-t border-border bg-card py-8 text-center text-xs text-muted-foreground sm:text-sm">
         <p>
           Companion demo · &ldquo;Why LLMs & JS Frameworks Love Tailwind CSS&rdquo; ·
-          Vite + React + TS + Tailwind v4
+          Vite + React + TS + Tailwind v4 + shadcn base-maia
         </p>
         <button
           type="button"
@@ -421,7 +433,7 @@ function App() {
                 : "smooth",
             })
           }
-          className="mt-3 cursor-pointer rounded-md text-xs font-semibold text-mint transition-colors hover:text-teal-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint"
+          className="mt-3 cursor-pointer rounded-md text-xs font-semibold text-foreground transition-colors hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           ↑ Back to top
         </button>

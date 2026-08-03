@@ -1,57 +1,68 @@
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ButtonHTMLAttributes } from "react";
-import { cn } from "../../lib/cn";
+
+import { cn } from "@/lib/utils";
 
 /**
- * A shadcn/ui-style Button: live proof of the talk's thesis.
+ * Official shadcn/ui Button on **Base UI** primitives, **Maia** style.
  *
- * `cva` (class-variance-authority) turns a closed set of Tailwind utilities into
- * a typed contract. The variants below are:
- *   - autocompleted in your editor,
- *   - type-checked at compile time (a bad variant is a red squiggle),
- *   - and readable in ONE span by both a teammate and an LLM.
+ * Live proof of the talk's thesis:
+ *   - `cva` turns a closed set of Tailwind utilities into a typed contract
+ *   - variants are autocompleted, type-checked, and readable in ONE span
+ *   - Base UI supplies the accessible primitive; Maia supplies the soft, rounded look
  *
  * TypeScript and Tailwind are the same philosophy at two layers: a constrained,
  * named vocabulary that catches mistakes early. Ask an LLM to "add a `success`
  * variant" and it edits exactly one place, because everything lives here.
  */
-export const buttonVariants = cva(
-  // base classes — always applied
-  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-50",
+const buttonVariants = cva(
+  "group/button inline-flex shrink-0 items-center justify-center rounded-4xl border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        primary:
-          "bg-mint text-white shadow-sm hover:bg-mint/90 hover:shadow",
-        secondary:
-          "bg-slate-100 text-ink hover:bg-slate-200",
+        default: "bg-primary text-primary-foreground hover:bg-primary/80",
         outline:
-          "border border-border bg-surface text-ink shadow-sm hover:bg-slate-50 hover:border-slate-300",
-        ghost: "text-ink-soft hover:bg-slate-100 hover:text-ink",
+          "border-border bg-input/30 hover:bg-input/50 hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+        ghost:
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:
-          "bg-coral text-white shadow-sm hover:bg-coral/90",
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-10 px-4",
-        lg: "h-12 px-6 text-base",
+        default:
+          "h-9 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5",
+        xs: "h-6 gap-1 px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8 gap-1 px-3 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        lg: "h-10 gap-1.5 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        icon: "size-9",
+        "icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
       },
     },
     defaultVariants: {
-      variant: "primary",
-      size: "md",
+      variant: "default",
+      size: "default",
     },
   },
 );
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof buttonVariants>;
-
-export function Button({ className, variant, size, ...props }: ButtonProps) {
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  ...props
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (
-    <button
-      className={cn(buttonVariants({ variant, size }), className)}
+    <ButtonPrimitive
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
   );
 }
+
+export { Button, buttonVariants };

@@ -11,6 +11,9 @@
  *      a global button rule elsewhere and this can break from a distance.
  *   3. Indirection: ".pricing-card--featured" means nothing until you read here.
  *   4. Drift: is the gap 20px or 24px? The spacing is ad-hoc, not tokenized.
+ *
+ * Colors mirror stock Maia/neutral so Demo 1 stays pixel-identical with the
+ * Tailwind card (without sharing a design token layer — that's the point).
  */
 
 .pricing-card {
@@ -21,14 +24,14 @@
   padding: 28px; /* ad-hoc value — no shared scale */
   border-radius: 16px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
+  border: 1px solid #ebebeb;
+  color: #111111;
   box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.06);
 }
 
 .pricing-card--featured {
-  border-color: #0d9488;
-  box-shadow: 0 0 0 1px #0d9488, 0 12px 28px rgb(13 148 136 / 0.14);
+  border-color: #111111;
+  box-shadow: 0 0 0 1px #111111, 0 12px 28px rgb(15 23 42 / 0.12);
 }
 
 .pricing-card__badge {
@@ -36,8 +39,8 @@
   margin-bottom: 14px; /* drift: 14 here, 16 elsewhere */
   padding: 4px 10px;
   border-radius: 9999px;
-  background: #ccfbf1;
-  color: #0d9488;
+  background: #f5f5f5;
+  color: #111111;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -48,7 +51,7 @@
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #64748b;
+  color: #737373;
 }
 
 .pricing-card__price {
@@ -62,7 +65,7 @@
 .pricing-card__price-suffix {
   font-size: 15px;
   font-weight: 500;
-  color: #64748b;
+  color: #737373;
 }
 
 .pricing-card__features {
@@ -79,11 +82,11 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  color: #334155;
+  color: #333333;
 }
 
 .pricing-card__check {
-  color: #0d9488;
+  color: #111111;
   flex-shrink: 0;
 }
 
@@ -91,9 +94,9 @@
   margin-top: auto;
   padding: 12px 16px;
   border: none;
-  border-radius: 12px;
-  background: #0f172a;
-  color: #ffffff;
+  border-radius: 9999px;
+  background: #f5f5f5;
+  color: #111111;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -101,18 +104,19 @@
 }
 
 .pricing-card__cta:hover {
-  background: #1e293b;
+  background: #e8e8e8;
 }
 
 .pricing-card__cta:focus-visible {
-  outline: 2px solid #0d9488;
+  outline: 2px solid #a3a3a3;
   outline-offset: 2px;
 }
 
 .pricing-card--featured .pricing-card__cta {
-  background: #0d9488;
+  background: #111111;
+  color: #fafafa;
 }
 
 .pricing-card--featured .pricing-card__cta:hover {
-  background: #0f766e;
+  background: #2a2a2a;
 }
