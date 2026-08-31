@@ -128,16 +128,16 @@ function Section({
 
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-slate-950 shadow-card">
-      <div className="flex items-center justify-between border-b border-white/10 bg-slate-900 px-4 py-2">
-        <span className="font-mono text-[11px] font-medium text-slate-400">{label}</span>
+    <div className="overflow-hidden rounded-2xl border border-border bg-code text-code-foreground shadow-card">
+      <div className="flex items-center justify-between border-b border-border bg-muted px-4 py-2">
+        <span className="font-mono text-[11px] font-medium text-muted-foreground">{label}</span>
         <span className="flex gap-1" aria-hidden>
-          <span className="size-2 rounded-full bg-slate-700" />
-          <span className="size-2 rounded-full bg-slate-700" />
-          <span className="size-2 rounded-full bg-slate-700" />
+          <span className="size-2 rounded-full bg-muted-foreground/40" />
+          <span className="size-2 rounded-full bg-muted-foreground/40" />
+          <span className="size-2 rounded-full bg-muted-foreground/40" />
         </span>
       </div>
-      <pre className="max-h-72 overflow-auto p-4 font-mono text-[11px] leading-relaxed text-slate-300 sm:text-xs">
+      <pre className="max-h-72 overflow-auto p-4 font-mono text-[11px] leading-relaxed text-code-foreground sm:text-xs">
         <code>{code.trim()}</code>
       </pre>
     </div>
@@ -241,17 +241,6 @@ function App() {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_20%_-10%,oklch(0.205_0_0/0.06),transparent_55%),radial-gradient(ellipse_50%_40%_at_90%_0%,oklch(0.556_0_0/0.05),transparent_50%)]"
         />
         <div className="relative mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-20">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge
-              variant="outline"
-              className="px-3 py-1 text-[11px] font-semibold uppercase tracking-widest"
-            >
-              Live demo
-            </Badge>
-            <p className="text-xs text-muted-foreground">
-              Talk companion · ~3 interactive demos · base-maia
-            </p>
-          </div>
           <h1 className="font-heading mt-5 max-w-3xl text-[2.15rem] font-extrabold leading-[1.12] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Why LLMs & JS frameworks{" "}
             <span className="text-muted-foreground">love Tailwind CSS</span>

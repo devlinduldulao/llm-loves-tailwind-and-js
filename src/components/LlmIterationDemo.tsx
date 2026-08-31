@@ -195,16 +195,16 @@ export function LlmIterationDemo() {
       </div>
 
       {/* Right — the diff feed */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-slate-950 shadow-card lg:sticky lg:top-6">
-        <div className="flex items-center justify-between border-b border-white/10 bg-slate-900 px-4 py-3 sm:px-5">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+      <div className="overflow-hidden rounded-2xl border border-border bg-code text-code-foreground shadow-card lg:sticky lg:top-6">
+        <div className="flex items-center justify-between border-b border-border bg-muted px-4 py-3 sm:px-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             ② The edits
           </p>
-          <span className="flex items-center gap-2 font-mono text-[11px] text-emerald-400">
+          <span className="flex items-center gap-2 font-mono text-[11px] text-emerald-600">
             <span
               className={cn(
                 "inline-block size-1.5 rounded-full",
-                applied > 0 ? "bg-emerald-400" : "bg-slate-600",
+                applied > 0 ? "bg-emerald-600" : "bg-muted-foreground/40",
               )}
             />
             {applied > 0 ? "1 file · button.tsx" : "button.tsx"}
@@ -213,28 +213,28 @@ export function LlmIterationDemo() {
 
         <div className="min-h-64 space-y-4 p-4 font-mono text-[11px] leading-relaxed sm:min-h-72 sm:p-5 sm:text-xs">
           {applied === 0 && (
-            <p className="text-slate-500">
+            <p className="text-muted-foreground">
               Waiting for a prompt… edits stream into this one file.
             </p>
           )}
           {STEPS.slice(0, applied).map((step, i) => (
             <div key={step.prompt} className="line-in">
-              <p className="text-slate-500">{step.intent}</p>
+              <p className="text-muted-foreground">{step.intent}</p>
               {step.added.map((line) => (
-                <p key={line} className="text-emerald-400">
+                <p key={line} className="text-emerald-700">
                   <span className="mr-2 select-none text-emerald-600">+</span>
                   {line}
                 </p>
               ))}
-              {i < applied - 1 && <div className="mt-3 border-b border-white/5" />}
+              {i < applied - 1 && <div className="mt-3 border-b border-border" />}
             </div>
           ))}
         </div>
 
         {done && (
-          <div className="border-t border-white/10 bg-slate-900 px-4 py-3 text-xs text-slate-400 sm:px-5">
+          <div className="border-t border-border bg-muted px-4 py-3 text-xs text-muted-foreground sm:px-5">
             3 prompts · 5 lines added ·{" "}
-            <span className="font-semibold text-emerald-400">0 other files touched</span>
+            <span className="font-semibold text-emerald-700">0 other files touched</span>
           </div>
         )}
       </div>
