@@ -74,7 +74,7 @@ function SiteNav() {
           }
           className="shrink-0 cursor-pointer rounded-md text-sm font-extrabold tracking-tight text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          LLMs <span className="text-primary">♥</span> Tailwind
+          LLMs <span className="text-primary">&</span> Tailwind
         </button>
         <div className="flex items-center gap-1 overflow-x-auto">
           {NAV_ITEMS.map(({ id, label }) => {
@@ -275,7 +275,7 @@ function App() {
       <Section
         id="demo-1"
         kicker="Demo 1"
-        title="Same card. Two files vs. one span."
+        title="Same card styling: 2 files vs 1 span."
       >
         <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
           Pixel-identical components. The only difference is how many files you (or
@@ -327,7 +327,7 @@ function App() {
 
       {/* Demo 2 — typed variants with cva */}
       <div className="border-y border-border bg-card">
-        <Section id="demo-2" kicker="Demo 2" title="Typed variants: TypeScript ♥ Tailwind">
+        <Section id="demo-2" kicker="Demo 2" title="Typed variants: TypeScript & Tailwind">
           <p className="mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             Flip variant and size. The class string updates from one typed contract —
             the same closed vocabulary an LLM can read and edit safely. Powered by
